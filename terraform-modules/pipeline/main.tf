@@ -127,7 +127,26 @@ data "aws_iam_policy_document" "codebuild_policy" {
         "s3:PutObject",
       ]
 
-      resources = ["${aws_s3_bucket.codepipeline_bucket.arn}/*"]
+      resources = [
+        "arn:aws:s3:::terraform-remote-state-inventory",
+        "arn:aws:s3:::terraform-remote-state-inventory/*",
+        "${aws_s3_bucket.codepipeline_bucket.arn}",
+        "${aws_s3_bucket.codepipeline_bucket.arn}/*"
+        ]
+    }
+
+    statement {
+      sid     = "CodebuildAllowDynamoDbAccess"
+      effect  = "Allow"
+
+      actions = [
+        "dynamodb:DescribeTable",
+        "dynamodb:GetItem",
+        "dynamodb:PutItem",
+        "dynamodb:DeleteItem"
+      ]
+
+      resources = ["arn:aws:dynamodb:ap-southeast-2:778196150762:table/terraform-remote-state-inventory"]
     }
 
     statement {
