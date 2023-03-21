@@ -61,6 +61,7 @@ resource "aws_route53_zone" "this" {
 resource "aws_acm_certificate" "this" {
   provider = aws.usea1
   domain_name       = aws_route53_zone.this.name
+  subject_alternative_names = ["www.${aws_route53_zone.this.name}"]
   validation_method = "DNS"
 }
 
@@ -99,17 +100,17 @@ resource "aws_route53_record" "apex" {
   }
 }
 
-# resource "aws_route53_record" "www" {
-#   zone_id = aws_route53_zone.this.id
-#   name    = "www.${aws_route53_zone.this.name}"
-#   type    = "A"
+resource "aws_route53_record" "www" {
+  zone_id = aws_route53_zone.this.id
+  name    = "www.ajdt.dev"
+  type    = "A"
 
-#   alias {
-#     name                    = aws_route53_record.apex.name
-#     zone_id                 = aws_route53_zone.this.id
-#     evaluate_target_health  = false
-#   }
-# }
+  alias {
+    name                    = "ajdt.dev"
+    zone_id                 = aws_route53_zone.this.id
+    evaluate_target_health  = false
+  }
+}
 
 data "aws_cloudfront_cache_policy" "this" {
   name = "Managed-CachingOptimized"
@@ -125,7 +126,8 @@ resource "aws_cloudfront_origin_access_control" "this" {
 
 resource "aws_cloudfront_distribution" "this" {
   aliases = [
-    aws_s3_bucket.this.id
+    aws_s3_bucket.this.id,
+    aws_route53_record.www.name
   ]
 
   enabled             = true
