@@ -29,7 +29,9 @@ data "aws_iam_policy_document" "codebuild_policy" {
 
       resources = [
         "arn:aws:logs:ap-southeast-2:778196150762:log-group:/aws/codebuild/portfolio-repo-deploy-infrastructure",   
-        "arn:aws:logs:ap-southeast-2:778196150762:log-group:/aws/codebuild/portfolio-repo-deploy-infrastructure:*"
+        "arn:aws:logs:ap-southeast-2:778196150762:log-group:/aws/codebuild/portfolio-repo-deploy-infrastructure:*",
+        "arn:aws:logs:ap-southeast-2:778196150762:log-group:/aws/codebuild/portfolio-repo-deploy-react-app",
+        "arn:aws:logs:ap-southeast-2:778196150762:log-group:/aws/codebuild/portfolio-repo-deploy-react-app:*"
       ]
     }
 
@@ -79,7 +81,10 @@ data "aws_iam_policy_document" "codebuild_policy" {
         "codebuild:BatchPutCodeCoverages"
       ]
 
-      resources = ["arn:aws:codebuild:ap-southeast-2:778196150762:report-group/portfolio-repo-deploy-infrastructure*"]
+      resources = [
+        "arn:aws:codebuild:ap-southeast-2:778196150762:report-group/portfolio-repo-deploy-infrastructure*",
+        "arn:aws:codebuild:ap-southeast-2:778196150762:report-group/portfolio-repo-deploy-react-app*"
+        ]
     }
 }
 

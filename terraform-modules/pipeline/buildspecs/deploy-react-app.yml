@@ -8,6 +8,8 @@ phases:
     commands:
       - sudo yum install -y yum-utils
       - sudo yum-config-manager --add-repo https://rpm.releases.hashicorp.com/AmazonLinux/hashicorp.repo
+      - cd react-app
+      - npm install
 
   pre_build:
     commands:
@@ -16,19 +18,14 @@ phases:
       - export AWS_ACCESS_KEY_ID=$(echo "${ROLE_CREDENTIALS}" | jq -r '.Credentials.AccessKeyId')
       - export AWS_SECRET_ACCESS_KEY=$(echo "${ROLE_CREDENTIALS}" | jq -r '.Credentials.SecretAccessKey')
       - export AWS_SESSION_TOKEN=$(echo "${ROLE_CREDENTIALS}" | jq -r '.Credentials.SessionToken')
-      - cd terraform-modules/react-app
       
-  
-  clean:
-    commands:
-      - aws s3 rm s3://ajdt.dev --recursive
-
   build:
     commands:
       - npm run build
-      - aws s3 cp --recursive ./dest s3://ajdt.dev
+      - aws s3 rm s3://ajdt.dev --recursive
+      - aws s3 cp --recursive ./dist s3://ajdt.dev
 
-  invalidate:
+  post_build:
     commands:
-      - aws cloudfront create-invalidation --distribution-id <id> --paths "/*"
+      - aws cloudfront create-invalidation --distribution-id E2R31D6X9IWNWU --paths "/*"
     
