@@ -1,0 +1,34 @@
+version: 0.2
+
+env:
+  git-credential-helper: yes
+
+phases:
+  install:
+    commands:
+      - sudo yum install -y yum-utils
+      - sudo yum-config-manager --add-repo https://rpm.releases.hashicorp.com/AmazonLinux/hashicorp.repo
+
+  pre_build:
+    commands:
+      - ASSUME_ROLE_ARN="arn:aws:iam::778196150762:role/TerraformInCodeBuild"
+      - ROLE_CREDENTIALS=$(aws sts assume-role --role-arn $ASSUME_ROLE_ARN --role-session-name CodeBuildDeployReactApp)
+      - export AWS_ACCESS_KEY_ID=$(echo "${ROLE_CREDENTIALS}" | jq -r '.Credentials.AccessKeyId')
+      - export AWS_SECRET_ACCESS_KEY=$(echo "${ROLE_CREDENTIALS}" | jq -r '.Credentials.SecretAccessKey')
+      - export AWS_SESSION_TOKEN=$(echo "${ROLE_CREDENTIALS}" | jq -r '.Credentials.SessionToken')
+      - cd terraform-modules/react-app
+      
+  
+  clean:
+    commands:
+      - aws s3 rm s3://ajdt.dev --recursive
+
+  build:
+    commands:
+      - npm run build
+      - aws s3 cp --recursive ./dest s3://ajdt.dev
+
+  invalidate:
+    commands:
+      - aws cloudfront create-invalidation --distribution-id <id> --paths "/*"
+    
