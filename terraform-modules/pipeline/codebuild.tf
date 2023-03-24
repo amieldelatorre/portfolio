@@ -96,12 +96,12 @@ resource "aws_iam_role_policy" "codebuild_policy" {
 
 
 resource "aws_codebuild_project" "deploy_infrastructure" {
-  name        = "portfolio-repo-deploy-infrastructure"
-  description = "For the deployment of the infrastucture for the portfolio repository"
+  name         = "portfolio-repo-deploy-infrastructure"
+  description  = "For the deployment of the infrastucture for the portfolio repository"
   service_role = aws_iam_role.codebuild_role.arn
 
   source {
-    type = "CODEPIPELINE"
+    type      = "CODEPIPELINE"
     buildspec = file("buildspecs/deploy-infrastructure.yml")
   }
 
@@ -122,12 +122,12 @@ resource "aws_codebuild_project" "deploy_infrastructure" {
 }
 
 resource "aws_codebuild_project" "deploy_react_app" {
-  name        = "portfolio-repo-deploy-react-app"
-  description = "For the deployment of the react app for the portfolio repository"
+  name         = "portfolio-repo-deploy-react-app"
+  description  = "For the deployment of the react app for the portfolio repository"
   service_role = aws_iam_role.codebuild_role.arn
 
   source {
-    type = "CODEPIPELINE"
+    type      = "CODEPIPELINE"
     buildspec = file("buildspecs/deploy-react-app.yml")
   }
 

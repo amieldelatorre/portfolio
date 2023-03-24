@@ -5,7 +5,7 @@ resource "random_string" "bucket_random_suffix" {
 }
 
 resource "aws_s3_bucket" "codepipeline_bucket" {
-  bucket = "deployment-pipeline-bucket-${random_string.bucket_random_suffix.result}"
+  bucket = "${var.deployment_pipeline_bucket_prefix}-${random_string.bucket_random_suffix.result}"
 }
 
 resource "aws_s3_bucket_ownership_controls" "codepipeline_bucket_ownership" {
@@ -99,7 +99,7 @@ resource "aws_iam_role_policy" "codepipeline_policy" {
 
 
 resource "aws_codepipeline" "codepipeline" {
-  name = "portfolio-repo-pipeline"
+  name     = "portfolio-repo-pipeline"
   role_arn = aws_iam_role.codepipeline_role.arn
 
   artifact_store {
