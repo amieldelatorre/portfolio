@@ -1,5 +1,5 @@
 resource "aws_s3_bucket" "this" {
-  bucket = "ajdt.dev"
+  bucket = var.content_bucket_name
 }
 
 resource "aws_s3_bucket_ownership_controls" "this" {
@@ -55,14 +55,14 @@ resource "aws_s3_bucket_website_configuration" "this" {
 }
 
 resource "aws_route53_zone" "this" {
-  name = "ajdt.dev"
+  name = var.hosted_zone_name
 }
 
 resource "aws_acm_certificate" "this" {
-  provider = aws.usea1
-  domain_name       = aws_route53_zone.this.name
+  provider                  = aws.usea1
+  domain_name               = aws_route53_zone.this.name
   subject_alternative_names = ["www.${aws_route53_zone.this.name}"]
-  validation_method = "DNS"
+  validation_method         = "DNS"
 }
 
 resource "aws_route53_record" "this" {
@@ -102,11 +102,11 @@ resource "aws_route53_record" "apex" {
 
 resource "aws_route53_record" "www" {
   zone_id = aws_route53_zone.this.id
-  name    = "www.ajdt.dev"
+  name    = "www.${aws_route53_zone.this.name}"
   type    = "A"
 
   alias {
-    name                    = "ajdt.dev"
+    name                    = aws_route53_zone.this.name
     zone_id                 = aws_route53_zone.this.id
     evaluate_target_health  = false
   }
