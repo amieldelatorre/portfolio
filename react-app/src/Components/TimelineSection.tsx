@@ -13,7 +13,6 @@ const getVerticalTimelineElements = () => {
     let experiences: Experience[] = dataInput.getExperienceData();
 
     const timelineElements = experiences.map((exp) => {
-        console.log(exp)
         return(
             <VerticalTimelineElement
                 key={exp.sortOrder}
@@ -27,7 +26,7 @@ const getVerticalTimelineElements = () => {
                 <h4 className="vertical-timeline-element-subtitle">{exp.location}</h4>
                 <p>{exp.description}</p>
             </VerticalTimelineElement>
-        )
+        );
     });
 
 
@@ -42,5 +41,5 @@ export const TimelineSection: FC<Props> = (props) => {
                 {getVerticalTimelineElements()}                
             </VerticalTimeline>
         </div> 
-    )
+    );
 };

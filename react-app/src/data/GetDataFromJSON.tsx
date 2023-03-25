@@ -5,7 +5,6 @@ import experienceJSON from "../assets/data/experience.json";
 class GetDatafromJSON implements IGetData {
 
     getExperienceData(): Experience[] {
-        console.log(experienceJSON)
         let experience: Experience[] = experienceJSON.map((exp) => {
             return new Experience (
                 exp.type,
